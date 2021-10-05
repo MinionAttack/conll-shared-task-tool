@@ -1,0 +1,26 @@
+LATTICE (Paris),software1-P,80.3
+HIT-SCIR (Harbin),software1-P,79.74
+ICS PAS (Warszawa),software1-P,77.62
+Stanford (Stanford),software2,76.93
+SLT-Interactions (Bengaluru),software2-P,76.89
+AntNLP (Shanghai),software1-P,76.11
+CEA LIST (Paris),software1-P,75.96
+Uppsala (Uppsala),software1-P,75.89
+UDPipe Future (Praha),software1-P,75.75
+TurkuNLP (Turku),software1-P,75.1
+NLP-Cube (București),software1-P,75.01
+ParisNLP (Paris),software1-P,72.21
+UniMelb (Melbourne),software1-P,71.83
+iParse (Pittsburgh),software1-P,70.18
+LeisureX (Shanghai),software1-P,69.93
+KParse (İstanbul),software1-P,69.84
+IBM NY (Yorktown Heights),software1-P,69.27
+Phoenix (Shanghai),software1-P,67.43
+BASELINE UDPipe 1.2 (Praha),software1-P,67.23
+Fudan (Shanghai),software5-P,65.98
+CUNI x-ling (Praha),software1-P,65.9
+HUJI (Yerushalayim),software1-P,65.7
+BOUN (İstanbul),software2-P,64.49
+ONLP lab (Ra'anana),software3-P,62.85
+ArmParser (Yerevan),software1-P,55.78
+SParse (İstanbul),software1-P,0.0
