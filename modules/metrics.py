@@ -219,7 +219,7 @@ def generate_chart(ranking_type: str, parser_positions: Dict[str, List[int]], or
     graph.set(title=title)
     graph.set_xticklabels(graph.get_xticklabels(), rotation=45, fontsize=6)
     graph.invert_yaxis()
-    #graph.tick_params(labelbottom=False, bottom=False)
+    # graph.tick_params(labelbottom=False, bottom=False)
     Path(__file__).parent.parent.joinpath("charts").joinpath(folder_name).mkdir(parents=True, exist_ok=True)
     file_path = Path(__file__).parent.parent.joinpath("charts").joinpath(folder_name).joinpath(f"{title}.png")
 
