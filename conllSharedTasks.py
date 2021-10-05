@@ -63,7 +63,7 @@ def main() -> None:
                                                           'Stanford (Stanford)', 'TurkuNLP (Turku)', 'UDPipe Future (Praha)',
                                                           'UniMelb (Melbourne)', 'Uppsala (Uppsala)'], nargs='+', required=True,
                            help="The name of the parser from which to display outlier positions. Because parser names contain spaces or "
-                                "single quotes, the name must be enclosed in double quotes.To indicate several at the same time, they "
+                                "single quotes, the name must be enclosed in double quotes. To indicate several at the same time, they "
                                 "must be separated by spaces.")
     subparser.add_argument('--section', type=str, choices=['individual', 'group'], required=True, help="The type of section in which to "
                                                                                                        "obtain the outliers.")
