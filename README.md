@@ -1,6 +1,6 @@
 # conll-shared-task-tool
 
-![build](https://img.shields.io/badge/build-passing-success) ![build](https://img.shields.io/badge/license-MIT-success) ![build](https://img.shields.io/badge/python-3.8%2B-blue) ![build](https://img.shields.io/badge/platform-linux--64-lightgrey)
+![build](https://img.shields.io/badge/build-passing-success) ![build](https://img.shields.io/badge/license-MIT-success) ![build](https://img.shields.io/badge/python-3.8%2B-blue) ![build](https://img.shields.io/badge/platform-linux--64-lightgrey) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MinionAttack_conll-shared-task-tool&metric=alert_status)](https://sonarcloud.io/dashboard?id=MinionAttack_conll-shared-task-tool)
 
 Table of contents.
 
