@@ -9,6 +9,40 @@ from tqdm import tqdm
 from resources.constants import SECTION_TYPES
 
 
+def load_language_set(ranking_type: List[str], section_type: str, folder_name: str) -> List[str]:
+    print("INFO: Loading language subsets")
+
+    file_path = Path(__file__).absolute()
+    root_folder = file_path.parent.parent
+    path_data_folder = Path(root_folder).joinpath(folder_name)
+
+    sets = {}
+    for ranking in ranking_type:
+        ranking_folders = get_folders(path_data_folder)
+        if ranking_folders:
+            ranking_folder = ranking_folders.get(ranking)
+            section_folders = get_folders(ranking_folder)
+            sets[ranking] = get_languages(section_type, section_folders)
+        else:
+            print(f"ERROR: {folder_name} does not exist or is empty")
+
+    lengths = []
+    for ranking, sections in sets.items():
+        for section, languages in sections.items():
+            length = len(languages)
+            lengths.append(length)
+    language_set = []
+    if len(set(lengths)) == 1:
+        for ranking in sets.keys():
+            languages = sets[ranking][section_type]
+            language_set.extend(languages)
+            break
+    else:
+        print(f"ERROR: There is a ranking that does not contain the same number of languages")
+
+    return language_set
+
+
 def load_data(ranking_type: str, section_type: str, folder_name: str,
               split_names: bool) -> Dict[str, Dict[str, Dict[str, List[Tuple[str, str, float]]]]]:
     print("INFO: Loading data")
@@ -43,6 +77,27 @@ def get_folders(path_data_folder: Path) -> Dict[str, Path]:
             folders[name] = item
 
     return folders
+
+
+def get_languages(section_type: str, folders: Dict[str, Path]) -> Dict[str, List[str]]:
+    languages = {}
+
+    files = []
+    if section_type == "all":
+        for section in SECTION_TYPES:
+            folder = folders.get(section)
+            for file in folder.iterdir():
+                filename = file.stem
+                files.append(filename)
+            languages[section] = files
+    else:
+        folder = folders.get(section_type)
+        for file in folder.iterdir():
+            filename = file.stem
+            files.append(filename)
+        languages[section_type] = files
+
+    return languages
 
 
 def get_files(section_type: str, folders: Dict[str, Path], split_names: bool) -> Dict[str, Dict[str, List[Tuple[str, str, float]]]]:

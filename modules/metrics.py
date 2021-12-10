@@ -2,7 +2,6 @@
 
 from enum import Enum
 from pathlib import Path
-from random import sample
 from statistics import mean, median, stdev
 from typing import Any, Dict, List, Tuple
 
@@ -12,7 +11,8 @@ from pandas import DataFrame
 from seaborn import boxplot
 from tabulate import tabulate
 
-from modules.data_loader import load_data
+from modules.data_loader import load_data, load_language_set
+from modules.utils import select_subsets
 from resources.constants import RESULTS_TYPES_NAMES
 
 
@@ -29,22 +29,22 @@ def measure_shared_task_metrics(ranking_type: List[str], section_type: str, tree
     print(f"INFO: Calculating metrics on set {section_type}")
 
     if section_type == "individual":
+        languages_set = load_language_set(ranking_type, section_type, "data")
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
         for ranking in ranking_type:
             data = load_data(ranking, section_type, "data", split_names=True)
-            language_set = data.get(ranking).get(section_type)
-            calculate_performance_metric(ranking, language_set, treebank_set_size, sampling_size, "data")
+            language_set_data = data.get(ranking).get(section_type)
+            calculate_performance_metric(ranking, language_set_data, subsets, "data")
     else:
         print("WARNING: Global metrics have not yet been implemented")
 
 
-def calculate_performance_metric(ranking_type: str, language_set: Dict[str, List[Tuple[str, str, float]]],
-                                 treebank_set_size: int, sampling_size: int, folder_name: str) -> None:
+def calculate_performance_metric(ranking_type: str, language_set_data: Dict[str, List[Tuple[str, str, float]]], subsets: List[List[str]],
+                                 folder_name: str) -> None:
     ranking_name = RESULTS_TYPES_NAMES.get(ranking_type)
     print(f"INFO: Calculation of parser performance metrics for {ranking_name}")
 
-    subsets = select_subsets(language_set, treebank_set_size, sampling_size)
-
-    parsers_scores = get_parsers_scores(language_set, subsets)
+    parsers_scores = get_parsers_scores(language_set_data, subsets)
     subset_means = calculate_parser_subset_means(parsers_scores)
     parsers_ranking = get_parsers_ranking(subset_means)
     ranking_metrics = calculate_ranking_metrics(parsers_ranking)
@@ -54,21 +54,6 @@ def calculate_performance_metric(ranking_type: str, language_set: Dict[str, List
     generate_chart(ranking_type, parsers_ranking, ordered_parsers, folder_name)
 
     display_metrics_results(mean_scores_metrics, "scores")
-
-
-def select_subsets(language_set: Dict[str, List[Tuple[str, str, float]]], treebank_set_size: int, sampling_size: int) -> List[List[str]]:
-    print(f"INFO: Selecting {sampling_size} subset(s) of size {treebank_set_size}")
-
-    languages = list(language_set.keys())
-    results = []
-    if languages:
-        while len(results) < sampling_size:
-            print(f"Number of subsets selected: {len(results)}/{sampling_size}", end="\r")
-            result = sample(languages, k=treebank_set_size)
-            if result not in results:
-                results.append(result)
-
-    return results
 
 
 def get_parsers_scores(language_set: Dict[str, List[Tuple[str, str, float]]],

@@ -4,8 +4,9 @@ from typing import Any, Dict, List, Tuple
 
 from tabulate import tabulate
 
-from modules.data_loader import load_data
-from modules.metrics import calculate_parser_subset_means, get_parsers_scores, select_subsets
+from modules.data_loader import load_data, load_language_set
+from modules.metrics import calculate_parser_subset_means, get_parsers_scores
+from modules.utils import select_subsets
 from resources.constants import RESULTS_TYPES_NAMES
 
 
@@ -18,12 +19,12 @@ def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: Li
         else:
             outliers_type = "worst"
 
+        languages_set = load_language_set(ranking_types, section_type, "data")
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
         for ranking_type in ranking_types:
             data = load_data(ranking_type, section_type, "data", split_names=False)
-            language_set = data.get(ranking_type).get(section_type)
-            subsets = select_subsets(language_set, treebank_set_size, sampling_size)
-
-            parsers_scores = get_parsers_scores(language_set, subsets)
+            language_set_data = data.get(ranking_type).get(section_type)
+            parsers_scores = get_parsers_scores(language_set_data, subsets)
             subset_means = calculate_parser_subset_means(parsers_scores)
             parsers_ranking = get_parsers_ranking(subset_means, show_best)
             classification[ranking_type] = parsers_ranking

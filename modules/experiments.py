@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Tuple
 
 from tabulate import tabulate
 
-from modules.data_loader import load_data
+from modules.data_loader import load_data, load_language_set
 from modules.metrics import calculate_parser_subset_means, get_parsers_ranking, get_parsers_scores, select_subsets
 from resources.constants import RESULTS_TYPES_NAMES
 
@@ -13,20 +13,19 @@ def measure_experiments_metrics(ranking_type: List[str], section_type: str, tree
     print(f"INFO: Calculating metrics of the experiments on set {section_type}")
 
     if section_type == "individual":
+        languages_set = load_language_set(ranking_type, section_type, "experiments")
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
         for ranking in ranking_type:
             data = load_data(ranking, section_type, "experiments", split_names=False)
             language_set = data.get(ranking).get(section_type)
-            calculate_classification(ranking, language_set, treebank_set_size, sampling_size)
+            calculate_classification(ranking, language_set, subsets)
     else:
         print("WARNING: Global metrics have not yet been implemented")
 
 
-def calculate_classification(ranking_type: str, language_set: Dict[str, List[Tuple[str, str, float]]],
-                             treebank_set_size: int, sampling_size: int) -> None:
+def calculate_classification(ranking_type: str, language_set: Dict[str, List[Tuple[str, str, float]]], subsets: List[List[str]]) -> None:
     ranking_name = RESULTS_TYPES_NAMES.get(ranking_type)
     print(f"INFO: Calculation of parser classification for {ranking_name}")
-
-    subsets = select_subsets(language_set, treebank_set_size, sampling_size)
 
     parsers_scores = get_parsers_scores(language_set, subsets)
     subset_means = calculate_parser_subset_means(parsers_scores)

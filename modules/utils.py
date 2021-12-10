@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from random import sample
+from typing import Any, List
+
 import requests as requests
-from typing import Any
 
 from resources.constants import BROWSER_USER_AGENT
 
@@ -26,3 +28,17 @@ def handle_request(url: str) -> Any:
         print(f"Error: {request_exception}")
 
     return None
+
+
+def select_subsets(language_set: List[str], treebank_set_size: int, sampling_size: int) -> List[List[str]]:
+    print(f"INFO: Selecting {sampling_size} subset(s) of size {treebank_set_size}")
+
+    results = []
+    if language_set:
+        while len(results) < sampling_size:
+            print(f"Number of subsets selected: {len(results)}/{sampling_size}", end="\r")
+            result = sample(language_set, k=treebank_set_size)
+            if result not in results:
+                results.append(result)
+
+    return results

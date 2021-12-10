@@ -17,7 +17,7 @@ def main() -> None:
     subparsers = parser.add_subparsers(title='Commands', dest='command')
 
     subparser = subparsers.add_parser('rankings', help='Get the classification results of the specified type and year from the website.')
-    subparser.add_argument('--type', type=str, choices=['all', 'las', 'mlas', 'blex', 'uas', 'clas', 'upos', 'xpos', 'ufeats', 'alltags',
+    subparser.add_argument('--type', type=str, choices=['las', 'mlas', 'blex', 'uas', 'clas', 'upos', 'xpos', 'ufeats', 'alltags',
                                                         'lemmas', 'sentences', 'words', 'tokens'], required=True,
                            help="The type of the ranking.")
     subparser.add_argument('--year', type=int, choices=[17, 18], required=True, help="The year of the shared task.")
