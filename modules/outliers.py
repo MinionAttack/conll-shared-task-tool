@@ -30,9 +30,8 @@ def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: Li
             classification[ranking_type] = parsers_ranking
 
         for parser in parsers:
-            print(
-                f"\nINFO: Obtaining the {limit} {outliers_type} outliers for parser {parser} in subsets of size {treebank_set_size} for a sampling "
-                f"size of {sampling_size}")
+            print(f"\nINFO: Obtaining the {limit} {outliers_type} outliers for parser {parser} in subsets of size {treebank_set_size} for "
+                  f"a sampling size of {sampling_size}")
             show_parser_outliers(parser, classification, limit)
     else:
         print("WARNING: Global metrics have not yet been implemented")
