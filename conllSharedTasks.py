@@ -16,6 +16,11 @@ def main() -> None:
                                         'custom experiments.')
     subparsers = parser.add_subparsers(title='Commands', dest='command')
 
+    cache_sample_help = "Indicates whether the generated samples are cached or not. If caching is indicated, previously generated " \
+                        "samples shall be loaded unless such samples do not exist, which shall be generated and then cached. When " \
+                        "loading samples from the cache, the size of the treebank and the sample size are checked to ensure that they " \
+                        "match the given values."
+
     subparser = subparsers.add_parser('rankings', help='Get the classification results of the specified type and year from the website.')
     subparser.add_argument('--type', type=str, choices=['las', 'mlas', 'blex', 'uas', 'clas', 'upos', 'xpos', 'ufeats', 'alltags',
                                                         'lemmas', 'sentences', 'words', 'tokens'], required=True,
@@ -36,6 +41,7 @@ def main() -> None:
                                                                             "but only N-1 treebanks shall be repeated between sets. The "
                                                                             "maximum number of samples available with 82 treebanks for a "
                                                                             "treebank set size (N) are 82! / (N! x (82 - N)!).")
+    subparser.add_argument('--cache_samples', type=str, choices=["yes", "no"], required=True, help=cache_sample_help)
 
     subparser = subparsers.add_parser('experiments', help='For a ranking, gets a leaderboard of the parsers used in the customised '
                                                           'experiments.')
@@ -51,6 +57,7 @@ def main() -> None:
                                                                             "but only N-1 treebanks shall be repeated between sets. The "
                                                                             "maximum number of samples available with 37 treebanks for a "
                                                                             "treebank set size (N) are 37! / (N! x (37 - N)!).")
+    subparser.add_argument('--cache_samples', type=str, choices=["yes", "no"], required=True, help=cache_sample_help)
 
     subparser = subparsers.add_parser('outliers', help='For a given parser, it shows the subsets in which it obtained its best position.')
     subparser.add_argument('--parser', type=str, choices=['AntNLP (Shanghai)', 'ArmParser (Yerevan)', 'BASELINE UDPipe 1.2 (Praha)',
@@ -82,6 +89,7 @@ def main() -> None:
                                                                             "but only N-1 treebanks shall be repeated between sets. The "
                                                                             "maximum number of samples available with 82 treebanks for a "
                                                                             "treebank set size (N) are 82! / (N! x (82 - N)!).")
+    subparser.add_argument('--cache_samples', type=str, choices=["yes", "no"], required=True, help=cache_sample_help)
 
     arguments = parser.parse_args()
     if arguments.command:
@@ -103,13 +111,15 @@ def process_arguments(arguments: Namespace) -> None:
         section_type = arguments.section
         treebank_set_size = arguments.treebank_set_size
         sampling_size = arguments.sampling_size
-        metrics_handler(ranking_type, section_type, treebank_set_size, sampling_size)
+        cache_samples = bool(util.strtobool(arguments.cache_samples))
+        metrics_handler(ranking_type, section_type, treebank_set_size, sampling_size, cache_samples)
     elif command == "experiments":
         ranking_type = arguments.ranking
         section_type = arguments.section
         treebank_set_size = arguments.treebank_set_size
         sampling_size = arguments.sampling_size
-        experiments_handler(ranking_type, section_type, treebank_set_size, sampling_size)
+        cache_samples = bool(util.strtobool(arguments.cache_samples))
+        experiments_handler(ranking_type, section_type, treebank_set_size, sampling_size, cache_samples)
     elif command == "outliers":
         parsers = arguments.parser
         section_type = arguments.section
@@ -118,7 +128,8 @@ def process_arguments(arguments: Namespace) -> None:
         sampling_size = arguments.sampling_size
         limit = arguments.limit
         show_best = bool(util.strtobool(arguments.show_best))
-        outliers_handler(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best)
+        cache_samples = bool(util.strtobool(arguments.cache_samples))
+        outliers_handler(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best, cache_samples)
     else:
         print("ERROR: Unknown parameter")
 
@@ -127,17 +138,18 @@ def rankings_handler(ranking_type: str, task_year: int) -> None:
     get_rankings(ranking_type, task_year)
 
 
-def metrics_handler(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int) -> None:
-    measure_shared_task_metrics(ranking_type, section_type, treebank_set_size, sampling_size)
+def metrics_handler(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int, cache_samples: bool) -> None:
+    measure_shared_task_metrics(ranking_type, section_type, treebank_set_size, sampling_size, cache_samples)
 
 
-def experiments_handler(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int) -> None:
-    measure_experiments_metrics(ranking_type, section_type, treebank_set_size, sampling_size)
+def experiments_handler(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int,
+                        cache_samples: bool) -> None:
+    measure_experiments_metrics(ranking_type, section_type, treebank_set_size, sampling_size, cache_samples)
 
 
 def outliers_handler(parsers: List[str], section_type: str, rankings: List[str], treebank_set_size: int, sampling_size: int,
-                     limit: int, show_best: bool) -> None:
-    get_parser_outliers(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best)
+                     limit: int, show_best: bool, cache_samples: bool) -> None:
+    get_parser_outliers(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best, cache_samples)
 
 
 if __name__ == "__main__":

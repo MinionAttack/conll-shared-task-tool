@@ -11,7 +11,7 @@ from resources.constants import RESULTS_TYPES_NAMES
 
 
 def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: List[str], treebank_set_size: int, sampling_size: int,
-                        limit: int, show_best: bool) -> None:
+                        limit: int, show_best: bool, cache_samples: bool) -> None:
     if section_type == "individual":
         classification = {}
         if show_best:
@@ -20,7 +20,7 @@ def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: Li
             outliers_type = "worst"
 
         languages_set = load_language_set(ranking_types, section_type, "data")
-        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size, cache_samples)
         for ranking_type in ranking_types:
             data = load_data(ranking_type, section_type, "data", split_names=False)
             language_set_data = data.get(ranking_type).get(section_type)

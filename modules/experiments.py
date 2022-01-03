@@ -9,12 +9,13 @@ from modules.metrics import calculate_parser_subset_means, get_parsers_ranking, 
 from resources.constants import RESULTS_TYPES_NAMES
 
 
-def measure_experiments_metrics(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int) -> None:
+def measure_experiments_metrics(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int,
+                                cache_samples: bool) -> None:
     print(f"INFO: Calculating metrics of the experiments on set {section_type}")
 
     if section_type == "individual":
         languages_set = load_language_set(ranking_type, section_type, "experiments")
-        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size, cache_samples)
         for ranking in ranking_type:
             data = load_data(ranking, section_type, "experiments", split_names=False)
             language_set = data.get(ranking).get(section_type)

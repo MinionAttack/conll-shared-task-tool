@@ -25,12 +25,13 @@ class SortResults(Enum):
     STANDARD_DEVIATION = 5
 
 
-def measure_shared_task_metrics(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int) -> None:
+def measure_shared_task_metrics(ranking_type: List[str], section_type: str, treebank_set_size: int, sampling_size: int,
+                                cache_samples: bool) -> None:
     print(f"INFO: Calculating metrics on set {section_type}")
 
     if section_type == "individual":
         languages_set = load_language_set(ranking_type, section_type, "data")
-        subsets = select_subsets(languages_set, treebank_set_size, sampling_size)
+        subsets = select_subsets(languages_set, treebank_set_size, sampling_size, cache_samples)
         for ranking in ranking_type:
             data = load_data(ranking, section_type, "data", split_names=True)
             language_set_data = data.get(ranking).get(section_type)

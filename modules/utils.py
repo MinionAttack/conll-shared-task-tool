@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from csv import reader, writer
+from pathlib import Path
 from random import sample
 from typing import Any, List
 
@@ -30,7 +32,50 @@ def handle_request(url: str) -> Any:
     return None
 
 
-def select_subsets(language_set: List[str], treebank_set_size: int, sampling_size: int) -> List[List[str]]:
+def select_subsets(language_set: List[str], treebank_set_size: int, sampling_size: int, cache_samples: bool) -> List[List[str]]:
+    if cache_samples:
+        cached_samples = load_cached_samples(treebank_set_size, sampling_size)
+        if cached_samples:
+            results = cached_samples
+        else:
+            samples = generate_samples(language_set, treebank_set_size, sampling_size)
+            save_samples(samples, treebank_set_size, sampling_size)
+            results = samples
+    else:
+        results = generate_samples(language_set, treebank_set_size, sampling_size)
+
+    return results
+
+
+def load_cached_samples(treebank_set_size: int, sampling_size: int) -> List[List[str]]:
+    print(f"INFO: Loading {sampling_size} subset(s) of size {treebank_set_size} from disk")
+
+    file_path = Path(__file__).absolute()
+    root_folder = file_path.parent.parent
+    path_cache_folder = Path(root_folder).joinpath("cache")
+    cache_file = Path(path_cache_folder, f"{treebank_set_size}-{sampling_size}.csv")
+
+    if cache_file.exists():
+        samples = read_saved_samples(cache_file)
+        return samples
+    else:
+        print(f"WARNING: There is no file of {sampling_size} subset(s) of size {treebank_set_size} that has been previously saved")
+        return []
+
+
+def read_saved_samples(cache_file: Path) -> List[List[str]]:
+    print(f"INFO: Reading {cache_file.name} file")
+
+    samples = []
+    with open(cache_file, 'rt', encoding="utf-8", newline='') as file:
+        csv_reader = reader(file)
+        for row in csv_reader:
+            samples.append(row)
+
+    return samples
+
+
+def generate_samples(language_set: List[str], treebank_set_size: int, sampling_size: int) -> List[List[str]]:
     print(f"INFO: Selecting {sampling_size} subset(s) of size {treebank_set_size}")
 
     results = []
@@ -42,3 +87,18 @@ def select_subsets(language_set: List[str], treebank_set_size: int, sampling_siz
                 results.append(result)
 
     return results
+
+
+def save_samples(samples: List[List[str]], treebank_set_size: int, sampling_size: int) -> None:
+    print(f"INFO: Saving {sampling_size} subset(s) of size {treebank_set_size} to disk")
+
+    file_path = Path(__file__).absolute()
+    root_folder = file_path.parent.parent
+    path_cache_folder = Path(root_folder).joinpath("cache")
+    path_cache_folder.mkdir(parents=True, exist_ok=True)
+
+    file_name = Path(path_cache_folder, f"{treebank_set_size}-{sampling_size}.csv")
+
+    with open(file_name, 'wt', encoding="utf-8", newline='') as cache_file:
+        csv_writer = writer(cache_file, dialect='unix')
+        csv_writer.writerows(samples)

@@ -21,7 +21,7 @@ This script has 4 features:
 3. For the data calculated in the local experiments, it obtains the classification of the parsers used.
 4. For a parser, show the outliers observed in the graphs.
 
-**It is important to note that the script uses the _data_, _experiments_ and _charts_ folders as the base directory for some features.**
+**It is important to note that the script uses the _data_, _experiments_, _cache_ and _charts_ folders as the base directory for some features.**
 
 ## How to use
 
@@ -96,11 +96,13 @@ To download a specific ranking for the year 2018:
 
 For a specific classification:
 
-`$ ./conllSharedTasks.py metrics --ranking blex --section individual --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py metrics --ranking blex --section individual --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
 
 To indicate several classifications at the same time, they must be separated by spaces:
 
-`$ ./conllSharedTasks.py metrics --ranking las uas blex --section individual --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py metrics --ranking las uas blex --section individual --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
+
+**Note**: Use _--cache_samples_ to store the generated subsets on disk and save time on subsequent invocations of the command.
 
 ### 3. Show the classification table of the parsers used in the local experiments.
 
@@ -125,11 +127,13 @@ to modify the command line in the _conllSharedTasks.py_ file, indicating in the 
 
 For a specific metric:
 
-`$ ./conllSharedTasks.py experiments --ranking las --section individual --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py experiments --ranking las --section individual --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
 
 To indicate several metrics at the same time, they must be separated by spaces:
 
-`$ ./conllSharedTasks.py experiments --ranking las uas --section individual --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py experiments --ranking las uas --section individual --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
+
+**Note**: Use _--cache_samples_ to store the generated subsets on disk and save time on subsequent invocations of the command.
 
 ### 3. Show the outliers
 
@@ -137,17 +141,19 @@ __Note__: Because parser names contain spaces or single quotes, the name must be
 
 For a specific parser in a specific metric:
 
-`$ ./conllSharedTasks.py outliers --parser "HIT-SCIR (Harbin)" --section individual --ranking las --limit 20 --show_best no --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py outliers --parser "HIT-SCIR (Harbin)" --section individual --ranking las --limit 20 --show_best no --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
 
 To indicate several parsers and/or metrics at the same time, they must be separated by spaces:
 
-`$ ./conllSharedTasks.py outliers --parser "HIT-SCIR (Harbin)" "AntNLP (Shanghai)" --section individual --ranking las uas --limit 20 --show_best no --treebank_set_size 10 --sampling_size 100000`
+`$ ./conllSharedTasks.py outliers --parser "HIT-SCIR (Harbin)" "AntNLP (Shanghai)" --section individual --ranking las uas --limit 20 --show_best no --treebank_set_size 10 --sampling_size 100000 --cache_samples yes`
 
 - **show_best**: This parameter controls whether the best outliers (yes) or the worst outliers (no) are displayed.
     - Showing the best outliers makes sense in the case of parsers that perform poorly in general, but have subsets where they do much
       better than expected.
     - Showing the worst outliers makes sense in the case of parsers that perform well in general, but have subsets where they do much worse
       than expected.
+
+**Note**: Use _--cache_samples_ to store the generated subsets on disk and save time on subsequent invocations of the command.
 
 ## Licensing agreement
 
