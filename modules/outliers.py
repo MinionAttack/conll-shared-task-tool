@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import gc
 from typing import Any, Dict, List, Tuple
 
 from tabulate import tabulate
@@ -26,8 +26,11 @@ def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: Li
             language_set_data = data.get(ranking_type).get(section_type)
             parsers_scores = get_parsers_scores(language_set_data, subsets)
             subset_means = calculate_parser_subset_means(parsers_scores)
+            del parsers_scores
             parsers_ranking = get_parsers_ranking(subset_means, show_best, limit)
+            del subset_means
             classification[ranking_type] = parsers_ranking
+            gc.collect()
 
         for parser in parsers:
             print(f"\nINFO: Obtaining the {limit} {outliers_type} outliers for parser {parser} in subsets of size {treebank_set_size} for "
@@ -43,6 +46,7 @@ def get_parsers_ranking(subset_means: Dict[Tuple[str, ...], Dict[str, float]],
 
     subset_rankings = get_subset_rankings(subset_means)
     parsers_ranking = rearrange_rankings(subset_rankings, show_best, limit)
+    del subset_rankings
 
     return parsers_ranking
 
@@ -78,6 +82,8 @@ def rearrange_rankings(subset_rankings: Dict[Tuple[str, ...], Dict[str, int]],
     for parser, ranking in rearranged.items():
         ordered = sorted(ranking, key=lambda value: value['score'], reverse=not show_best)
         sorted_rearrange[parser] = ordered[:limit]
+        del ordered
+    del rearranged
 
     return sorted_rearrange
 
