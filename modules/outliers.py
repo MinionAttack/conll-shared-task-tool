@@ -26,23 +26,23 @@ def get_parser_outliers(parsers: List[str], section_type: str, ranking_types: Li
             language_set_data = data.get(ranking_type).get(section_type)
             parsers_scores = get_parsers_scores(language_set_data, subsets)
             subset_means = calculate_parser_subset_means(parsers_scores)
-            parsers_ranking = get_parsers_ranking(subset_means, show_best)
+            parsers_ranking = get_parsers_ranking(subset_means, show_best, limit)
             classification[ranking_type] = parsers_ranking
 
         for parser in parsers:
             print(f"\nINFO: Obtaining the {limit} {outliers_type} outliers for parser {parser} in subsets of size {treebank_set_size} for "
                   f"a sampling size of {sampling_size}")
-            show_parser_outliers(parser, classification, limit)
+            show_parser_outliers(parser, classification)
     else:
         print("WARNING: Global metrics have not yet been implemented")
 
 
 def get_parsers_ranking(subset_means: Dict[Tuple[str, ...], Dict[str, float]],
-                        show_best: bool) -> Dict[str, List[Dict[str, Any]]]:
+                        show_best: bool, limit: int) -> Dict[str, List[Dict[str, Any]]]:
     print(f"INFO: Calculating the ranking of each parser based on the mean value of the scores in each subset")
 
     subset_rankings = get_subset_rankings(subset_means)
-    parsers_ranking = rearrange_rankings(subset_rankings, show_best)
+    parsers_ranking = rearrange_rankings(subset_rankings, show_best, limit)
 
     return parsers_ranking
 
@@ -60,7 +60,7 @@ def get_subset_rankings(subset_means: Dict[Tuple[str, ...], Dict[str, float]]) -
 
 
 def rearrange_rankings(subset_rankings: Dict[Tuple[str, ...], Dict[str, int]],
-                       show_best: bool) -> Dict[str, List[Dict[str, Any]]]:
+                       show_best: bool, limit: int) -> Dict[str, List[Dict[str, Any]]]:
     rearranged = {}
     for subset, parsers_raking in subset_rankings.items():
         for parser, score in parsers_raking.items():
@@ -77,33 +77,30 @@ def rearrange_rankings(subset_rankings: Dict[Tuple[str, ...], Dict[str, int]],
     sorted_rearrange = {}
     for parser, ranking in rearranged.items():
         ordered = sorted(ranking, key=lambda value: value['score'], reverse=not show_best)
-        sorted_rearrange[parser] = ordered
+        sorted_rearrange[parser] = ordered[:limit]
 
     return sorted_rearrange
 
 
-def show_parser_outliers(parser: str, classification: Dict[str, Dict[str, List[Dict[str, Any]]]], limit: int) -> None:
+def show_parser_outliers(parser: str, classification: Dict[str, Dict[str, List[Dict[str, Any]]]]) -> None:
     for metric, parsers in classification.items():
         metric_name = RESULTS_TYPES_NAMES.get(metric)
         print(f"INFO: Showing outliers for {metric_name}")
         values = parsers.get(parser)
-        table_data = tabulate_data_format(values, limit)
+        table_data = tabulate_data_format(values)
         table = tabulate(table_data, headers="firstrow", tablefmt="github", stralign="left", numalign="center", floatfmt=".2f")
         print(f"\n{table}\n")
 
 
-def tabulate_data_format(values: List[Dict[str, Any]], limit: int) -> List[List[Any]]:
+def tabulate_data_format(values: List[Dict[str, Any]]) -> List[List[Any]]:
     data = []
     headers = ["Subset", "Position"]
 
     for value in values:
-        if len(data) < limit:
-            subset = value.get("subset")
-            score = value.get("score")
-            item = [subset, score]
-            data.append(item)
-        else:
-            break
+        subset = value.get("subset")
+        score = value.get("score")
+        item = [subset, score]
+        data.append(item)
 
     data.insert(0, headers)
 
