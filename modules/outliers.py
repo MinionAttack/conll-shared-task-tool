@@ -46,7 +46,6 @@ def get_parsers_ranking(subset_means: Dict[Tuple[str, ...], Dict[str, float]],
 
     subset_rankings = get_subset_rankings(subset_means)
     parsers_ranking = rearrange_rankings(subset_rankings, show_best, limit)
-    del subset_rankings
 
     return parsers_ranking
 
@@ -82,8 +81,6 @@ def rearrange_rankings(subset_rankings: Dict[Tuple[str, ...], Dict[str, int]],
     for parser, ranking in rearranged.items():
         ordered = sorted(ranking, key=lambda value: value['score'], reverse=not show_best)
         sorted_rearrange[parser] = ordered[:limit]
-        del ordered
-    del rearranged
 
     return sorted_rearrange
 
