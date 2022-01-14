@@ -7,6 +7,7 @@ from typing import List
 
 from modules.experiments import measure_experiments_metrics
 from modules.metrics import measure_shared_task_metrics
+from modules.outlier_statistics import get_outlier_statistics
 from modules.outliers import get_parser_outliers
 from modules.rankings import get_rankings
 
@@ -49,14 +50,14 @@ def main() -> None:
                            help="The ranking(s) to compare scores. To indicate several at the same time, they must be separated by spaces.")
     subparser.add_argument('--section', type=str, choices=['individual'], required=True, help="The type of the section on which to "
                                                                                               "calculate the metric.")
-    subparser.add_argument('--treebank_set_size', type=int, required=True, help="The size of the treebank sets. There are 37 different "
+    subparser.add_argument('--treebank_set_size', type=int, required=True, help="The size of the treebank sets. There are 47 different "
                                                                                 "treebanks.")
     subparser.add_argument('--sampling_size', type=int, required=True, help="The number of samples on which to generate the metric. "
                                                                             "Very large numbers may cause the metric to take time to "
                                                                             "calculate. Repetition of treebanks between sets are allowed, "
                                                                             "but only N-1 treebanks shall be repeated between sets. The "
-                                                                            "maximum number of samples available with 37 treebanks for a "
-                                                                            "treebank set size (N) are 37! / (N! x (37 - N)!).")
+                                                                            "maximum number of samples available with 47 treebanks for a "
+                                                                            "treebank set size (N) are 47! / (N! x (47 - N)!).")
     subparser.add_argument('--cache_samples', type=str, choices=["yes", "no"], required=True, help=cache_sample_help)
 
     subparser = subparsers.add_parser('outliers', help='For a given parser, it shows the subsets in which it obtained its best position.')
@@ -90,6 +91,9 @@ def main() -> None:
                                                                             "maximum number of samples available with 82 treebanks for a "
                                                                             "treebank set size (N) are 82! / (N! x (82 - N)!).")
     subparser.add_argument('--cache_samples', type=str, choices=["yes", "no"], required=True, help=cache_sample_help)
+
+    subparser = subparsers.add_parser('statistics', help='It shows different statistics on the outliers of the language sets.')
+    subparser.add_argument('--file', type=str, required=True, help="Path to the file with the treebank sets of the outliers of a parser.")
 
     arguments = parser.parse_args()
     if arguments.command:
@@ -130,6 +134,9 @@ def process_arguments(arguments: Namespace) -> None:
         show_best = bool(util.strtobool(arguments.show_best))
         cache_samples = bool(util.strtobool(arguments.cache_samples))
         outliers_handler(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best, cache_samples)
+    elif command == "statistics":
+        file = arguments.file
+        statistics_handler(file)
     else:
         print("ERROR: Unknown parameter")
 
@@ -150,6 +157,10 @@ def experiments_handler(ranking_type: List[str], section_type: str, treebank_set
 def outliers_handler(parsers: List[str], section_type: str, rankings: List[str], treebank_set_size: int, sampling_size: int,
                      limit: int, show_best: bool, cache_samples: bool) -> None:
     get_parser_outliers(parsers, section_type, rankings, treebank_set_size, sampling_size, limit, show_best, cache_samples)
+
+
+def statistics_handler(file: str) -> None:
+    get_outlier_statistics(file)
 
 
 if __name__ == "__main__":

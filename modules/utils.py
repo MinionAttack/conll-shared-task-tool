@@ -56,19 +56,19 @@ def load_cached_samples(treebank_set_size: int, sampling_size: int) -> List[List
     cache_file = Path(path_cache_folder, f"{treebank_set_size}-{sampling_size}.csv")
 
     if cache_file.exists():
-        samples = read_saved_samples(cache_file)
+        samples = read_csv_file(cache_file)
         return samples
     else:
         print(f"WARNING: There is no file of {sampling_size} subset(s) of size {treebank_set_size} that has been previously saved")
         return []
 
 
-def read_saved_samples(cache_file: Path) -> List[List[str]]:
-    print(f"INFO: Reading {cache_file.name} file")
+def read_csv_file(file: Path) -> List[List[str]]:
+    print(f"INFO: Reading {file.name} file")
 
     samples = []
-    with open(cache_file, 'rt', encoding="utf-8", newline='') as file:
-        csv_reader = reader(file)
+    with open(file, 'rt', encoding="utf-8", newline='') as csv_file:
+        csv_reader = reader(csv_file)
         for row in csv_reader:
             samples.append(row)
 

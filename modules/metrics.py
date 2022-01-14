@@ -152,7 +152,7 @@ def calculate_metrics(values: Dict[str, List[Any]]) -> Dict[str, Dict[str, Any]]
         mean_value = mean(means)
         median_value = median(means)
         standard_deviation_value = stdev(means)
-        metrics[parser] = {'maximum': maximum_value, 'minimum': minimum_value, 'mean': mean_value, 'median': median_value,
+        metrics[parser] = {'minimum': minimum_value, 'maximum': maximum_value, 'mean': mean_value, 'median': median_value,
                            'standard_deviation': standard_deviation_value}
 
     return metrics
@@ -194,8 +194,17 @@ def generate_chart(ranking_type: str, parser_positions: Dict[str, List[int]], or
 
     reordered_parsers = {}
     for parser in ordered_parsers:
+        if " " in parser:
+            formatted = parser.replace(" ", "\n")
+        elif "-" in parser:
+            formatted = parser.replace("-", "\n")
+        else:
+            formatted = parser
+        if "1.2" in formatted:
+            formatted = formatted.replace("\n1.2", "")
+
         positions = parser_positions.get(parser)
-        reordered_parsers[parser] = positions
+        reordered_parsers[formatted] = positions
 
     dataframe = DataFrame.from_dict(reordered_parsers)
     figure(figsize=(15, 8))
@@ -203,11 +212,11 @@ def generate_chart(ranking_type: str, parser_positions: Dict[str, List[int]], or
     graph = boxplot(data=dataframe)
     title = RESULTS_TYPES_NAMES.get(ranking_type)
     # graph.set(title=title)
-    graph.set_xticklabels(graph.get_xticklabels(), rotation=45, fontsize=6)
+    graph.set_xticklabels(graph.get_xticklabels(), rotation=90, fontsize=12)
     graph.invert_yaxis()
     graph.set(ylabel="Ranking")
     # graph.tick_params(labelbottom=False, bottom=False)
     Path(__file__).parent.parent.joinpath("charts").joinpath(folder_name).mkdir(parents=True, exist_ok=True)
     file_path = Path(__file__).parent.parent.joinpath("charts").joinpath(folder_name).joinpath(f"{title}.png")
 
-    savefig(file_path)
+    savefig(file_path, bbox_inches='tight')

@@ -1,0 +1,82 @@
+af_afribooms,Afrikaans-AfriBooms,49K,Indo-European Germanic
+ar_padt,Arabic-PADT,282K,Afro-Asiatic Semitic
+bg_btb,Bulgarian-BTB,156K,Indo-European Slavic
+br_keb,Breton-KEB,10K,Indo-European Celtic
+bxr_bdt,Buryat-BDT,10K,Mongolic
+ca_ancora,Catalan-AnCora,553K,Indo-European Romance
+cs_cac,Czech-CAC,495K,Indo-European Slavic
+cs_fictree,Czech-FicTree,167K,Indo-European Slavic
+cs_pdt,Czech-PDT,1509K,Indo-European Slavic
+cs_pud,Czech-PUD,18K,Indo-European Slavic
+cu_proiel,Old_Church_Slavonic-PROIEL,57K,Indo-European Slavic
+da_ddt,Danish-DDT,100K,Indo-European Germanic
+de_gsd,German-GSD,292K,Indo-European Germanic
+el_gdt,Greek-GDT,63K,Indo-European Greek
+en_ewt,English-EWT,254K,Indo-European Germanic
+en_gum,English-GUM,135K,Indo-European Germanic
+en_lines,English-LinES,94K,Indo-European Germanic
+en_pud,English-PUD,21K,Indo-European Germanic
+es_ancora,Spanish-AnCora,567K,Indo-European Romance
+et_edt,Estonian-EDT,438K,Uralic Finnic
+eu_bdt,Basque-BDT,121K,Basque
+fa_seraji,Persian-Seraji,152K,Indo-European Iranian
+fi_ftb,Finnish-FTB,159K,Uralic Finnic
+fi_pud,Finnish-PUD,15K,Uralic Finnic
+fi_tdt,Finnish-TDT,202K,Uralic Finnic
+fo_oft,Faeroese-OFT,10K,Indo-European Germanic
+fr_gsd,French-GSD,400K,Indo-European Romance
+fr_sequoia,French-Sequoia,70K,Indo-European Romance
+fr_spoken,French-Rhapsodie,44K,Indo-European Romance
+fro_srcmf,Old_French-SRCMF,199K,Indo-European Romance
+ga_idt,Irish-IDT,115K,Indo-European Celtic
+gl_ctg,Galician-CTG,138K,Indo-European Romance
+gl_treegal,Galician-TreeGal,25K,Indo-European Romance
+got_proiel,Gothic-PROIEL,55K,Indo-European Germanic
+grc_perseus,Ancient_Greek-Perseus,202K,Indo-European Greek
+grc_proiel,Ancient_Greek-PROIEL,213K,Indo-European Greek
+he_htb,Hebrew-HTB,161K,Afro-Asiatic Semitic
+hi_hdtb,Hindi-HDTB,351K,Indo-European Indic
+hr_set,Croatian-SET,199K,Indo-European Slavic
+hsb_ufal,Upper_Sorbian-UFAL,11K,Indo-European Slavic
+hu_szeged,Hungarian-Szeged,42K,Uralic Ugric
+hy_armtdp,Armenian-ArmTDP,52K,Indo-European Armenian
+id_gsd,Indonesian-GSD,169K,Austronesian Malayo-Sumbawan
+it_isdt,Italian-ISDT,298K,Indo-European Romance
+it_postwita,Italian-PoSTWITA,124K,Indo-European Romance
+ja_gsd,Japanese-GSD,193K,Japanese
+ja_modern,Japanese-Modern,14K,Japanese
+kk_ktb,Kazakh-KTB,10K,Turkic Northwestern
+kmr_mg,Kurmanji-MG,10K,Indo-European Iranian
+ko_gsd,Korean-GSD,80K,Korean
+ko_kaist,Korean-Kaist,350K,Korean
+la_ittb,Latin-ITTB,450K,Indo-European Latin
+la_perseus,Latin-Perseus,29K,Indo-European Latin
+la_proiel,Latin-PROIEL,200K,Indo-European Latin
+lv_lvtb,Latvian-LVTB,265K,Indo-European Baltic
+nl_alpino,Dutch-Alpino,208K,Indo-European Germanic
+nl_lassysmall,Dutch-LassySmall,98K,Indo-European Germanic
+no_bokmaal,Norwegian-Bokmaal,310K,Indo-European Germanic
+no_nynorsk,Norwegian-Nynorsk,301K,Indo-European Germanic
+no_nynorsklia,Norwegian-NynorskLIA,55K,Indo-European Germanic
+pcm_nsc,Naija-NSC,140K,Creole
+pl_lfg,Polish-LFG,130K,Indo-European Slavic
+pl_sz,Polish-SZ,130K,Indo-European Slavic
+pt_bosque,Portuguese-Bosque,227K,Indo-European Romance
+ro_rrt,Romanian-RRT,218K,Indo-European Romance
+ru_syntagrus,Russian-SynTagRus,1517K,Indo-European Slavic
+ru_taiga,Russian-Taiga,197K,Indo-European Slavic
+sk_snk,Slovak-SNK,106K,Indo-European Slavic
+sl_ssj,Slovenian-SSJ,140K,Indo-European Slavic
+sl_sst,Slovenian-SST,29K,Indo-European Slavic
+sme_giella,North_Sámi-Giella,Uralic Sami
+sr_set,Serbian-SET,97K,Indo-European Slavic
+sv_lines,Swedish-LinES,90K,Indo-European Germanic
+sv_pud,Swedish-PUD,19K,Indo-European Germanic
+sv_talbanken,Swedish-Talbanken,96K,Indo-European Germanic
+th_pud,Thai-PUD,22K,Tai-Kadai
+tr_imst,Turkish-IMST,57K,Turkic Southwestern
+ug_udt,Uyghur-UDT,40K,Turkic Southeastern
+uk_iu,Ukrainian-IU,122K,Indo-European Slavic
+ur_udtb,Urdu-UDTB,138K,Indo-European Indic
+vi_vtb,Vietnamese-VTB,43K,Austro-Asiatic Viet-Muong
+zh_gsd,Chinese-GSD,123K,Sino-Tibetan
