@@ -14,13 +14,14 @@ Table of contents.
 This is a tool to download the CoNLL Shared Task classification tables and perform metrics on them. It also allows to perform metrics on
 local results and display outliers for a parser.
 
-This script has 4 features:
+This script has 6 features:
 
 1. Download the parser ranking tables from the Conll Shared Task website for a particular year.
 2. Calculate different metrics on the downloaded data by displaying the results on screen and generating the respective graphs.
 3. For the data calculated in the local experiments, it obtains the classification of the parsers used.
 4. For a parser, show the outliers observed in the graphs.
 5. For outliers of a parser, calculate some statistics on them.
+6. For a corpus of SemEval-2022 Shared Task 10, find how many sentences have multiple opinions that share some part.
 
 **It is important to note that the script uses the _data_, _experiments_, _cache_ and _charts_ folders as the base directory for some features.**
 
@@ -37,7 +38,7 @@ To run the script, from a terminal in the root directory, type:
 This will show the usage:
 
 ```
-usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics} ...
+usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics,analise} ...
 
 Gets the rankings and shows some metrics on the CoNLL Shared Task of the specified year or in custom experiments.
 
@@ -45,12 +46,13 @@ optional arguments:
   -h, --help            show this help message and exit
 
 Commands:
-  {rankings,metrics,experiments,outliers,statistics}
+  {rankings,metrics,experiments,outliers,statistics,analise}
     rankings            Get the classification results of the specified type and year from the website.
     metrics             Gets the indicated metric on the selected CoNLL Shared Task dataset.
     experiments         For a ranking, gets a leaderboard of the parsers used in the customised experiments.
     outliers            For a given parser, it shows the subsets in which it obtained its best position.
     statistics          It shows different statistics on the outliers of the language sets.
+    analise             For a given corpus, analyse whether it has sentences with several opinions in which some element is shared between them.
 ```
 
 If you want to know how to use a specific command, for example the *rankings* command, type:
@@ -169,6 +171,31 @@ pl_sz,la_ittb,pcm_nsc,th_pud,hi_hdtb,hsb_ufal,grc_proiel,ko_kaist,sl_sst,ug_udt
 fa_seraji,it_postwita,no_nynorsklia,hsb_ufal,ca_ancora,ru_syntagrus,es_ancora,fo_oft,ur_udtb,nl_alpino
 uk_iu,sr_set,hsb_ufal,hi_hdtb,en_ewt,sl_sst,cs_pdt,ja_gsd,pcm_nsc,sv_talbanken
 en_gum,es_ancora,cs_pdt,pl_sz,hu_szeged,ja_gsd,gl_ctg,ja_modern,hsb_ufal,ko_kaist
+```
+
+### 6. Analise corpus
+
+`$ ./conllSharedTasks.py analise --file Desktop/SemEval-2022_Shared_Task_10/data/opener_en/train.json`
+
+This will show a table with the results:
+
+```
+|  Number of opinions  |  Occurrences  |  Number of times a sentence shares parts  |
+|----------------------|---------------|-------------------------------------------|
+|          1           |      638      |                     0                     |
+|          2           |      424      |                    224                    |
+|          3           |      173      |                    124                    |
+|          4           |      80       |                    68                     |
+|          5           |      34       |                    31                     |
+|          6           |      23       |                    17                     |
+|          7           |      13       |                    12                     |
+|          8           |       5       |                     4                     |
+|          9           |       3       |                     3                     |
+|          10          |       1       |                     1                     |
+|          11          |       2       |                     2                     |
+|          13          |       1       |                     1                     |
+|          14          |       1       |                     1                     |
+|          17          |       2       |                     2                     |
 ```
 
 ## Licensing agreement

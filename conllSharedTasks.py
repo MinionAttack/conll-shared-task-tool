@@ -5,6 +5,7 @@ from argparse import ArgumentParser, Namespace
 from distutils import util
 from typing import List
 
+from modules.analiser import get_duplicate_elements
 from modules.experiments import measure_experiments_metrics
 from modules.metrics import measure_shared_task_metrics
 from modules.outlier_statistics import get_outlier_statistics
@@ -95,6 +96,10 @@ def main() -> None:
     subparser = subparsers.add_parser('statistics', help='It shows different statistics on the outliers of the language sets.')
     subparser.add_argument('--file', type=str, required=True, help="Path to the file with the treebank sets of the outliers of a parser.")
 
+    subparser = subparsers.add_parser('analise', help='For a given corpus, analyse whether it has sentences with several opinions in '
+                                                      'which some element is shared between them.')
+    subparser.add_argument('--file', type=str, required=True, help="Path to the JSON file of the treebank.")
+
     arguments = parser.parse_args()
     if arguments.command:
         process_arguments(arguments)
@@ -137,6 +142,9 @@ def process_arguments(arguments: Namespace) -> None:
     elif command == "statistics":
         file = arguments.file
         statistics_handler(file)
+    elif command == "analise":
+        file = arguments.file
+        analise_handler(file)
     else:
         print("ERROR: Unknown parameter")
 
@@ -161,6 +169,10 @@ def outliers_handler(parsers: List[str], section_type: str, rankings: List[str],
 
 def statistics_handler(file: str) -> None:
     get_outlier_statistics(file)
+
+
+def analise_handler(file: str) -> None:
+    get_duplicate_elements(file)
 
 
 if __name__ == "__main__":

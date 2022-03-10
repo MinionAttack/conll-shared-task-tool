@@ -99,12 +99,11 @@ def tabulate_data_format(values: List[Dict[str, Any]]) -> List[List[Any]]:
     data = []
     headers = ["Subset", "Position"]
 
+    data.append(headers)
     for value in values:
         subset = value.get("subset")
         score = value.get("score")
         item = [subset, score]
         data.append(item)
-
-    data.insert(0, headers)
 
     return data
