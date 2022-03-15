@@ -20,21 +20,21 @@ def get_duplicate_elements(file: str) -> None:
 def find_duplicates(sentences: List[Dict[str, Any]], file_name: str) -> None:
     print(f"Finding duplicate elements in {file_name} file")
 
-    opinion_occurrences = {}
-    similar_parts_occurrences = {}
-    for sentence in sentences:
-        opinions = sentence.get("opinions")
-        if opinions:
-            count_occurrences(opinions, opinion_occurrences)
-            count_similar_parts(opinions, similar_parts_occurrences)
-        else:
-            continue
-
-    ordered_opinion_occurrences = dict(sorted(opinion_occurrences.items()))
-    ordered_similar_parts_occurrences = dict(sorted(similar_parts_occurrences.items()))
-
-    headers = ["Number of opinions", "Occurrences", "Number of times a sentence shares parts"]
-    display_occurrences(ordered_opinion_occurrences, ordered_similar_parts_occurrences, headers)
+    # opinion_occurrences = {}
+    # similar_parts_occurrences = {}
+    # for sentence in sentences:
+    #     opinions = sentence.get("opinions")
+    #     if opinions:
+    #         count_occurrences(opinions, opinion_occurrences)
+    #         count_similar_parts(opinions, similar_parts_occurrences)
+    #     else:
+    #         continue
+    #
+    # ordered_opinion_occurrences = dict(sorted(opinion_occurrences.items()))
+    # ordered_similar_parts_occurrences = dict(sorted(similar_parts_occurrences.items()))
+    #
+    # headers = ["Number of opinions", "Occurrences", "Number of times a sentence shares parts"]
+    # display_occurrences(ordered_opinion_occurrences, ordered_similar_parts_occurrences, headers)
 
     detailed_parts_occurrences = {}
     count_detailed_similar_parts(sentences, detailed_parts_occurrences)
@@ -105,7 +105,7 @@ def add_elements(opinion_part: List[List[str]], parts: set) -> bool:
     return False
 
 
-def count_detailed_similar_parts(sentences: List[Dict[str, Any]], detailed_occurrences: Dict[str, List[List[List[int]]]]) -> None:
+def count_detailed_similar_parts(sentences: List[Dict[str, Any]], detailed_occurrences: Dict[str, List[Dict[str, Any]]]) -> None:
     for sentence_index, sentence in enumerate(sentences, start=1):
         sources = []
         targets = []
@@ -129,11 +129,14 @@ def count_detailed_similar_parts(sentences: List[Dict[str, Any]], detailed_occur
                     continue
 
             if opinion_part == "Source" and sources:
-                add_collisions(opinion_part, sources, detailed_occurrences)
+                data = {"collisions": sources, "opinions": len(opinions)}
+                add_collisions(opinion_part, data, detailed_occurrences)
             elif opinion_part == "Target" and targets:
-                add_collisions(opinion_part, targets, detailed_occurrences)
+                data = {"collisions": targets, "opinions": len(opinions)}
+                add_collisions(opinion_part, data, detailed_occurrences)
             elif opinion_part == "Polar_expression" and expressions:
-                add_collisions(opinion_part, expressions, detailed_occurrences)
+                data = {"collisions": expressions, "opinions": len(opinions)}
+                add_collisions(opinion_part, data, detailed_occurrences)
             else:
                 continue
 
@@ -197,7 +200,7 @@ def is_sublist(reference: List[List[int]], compare: List[int]):
     return False
 
 
-def add_collisions(part_name: str, part_collisions: List[List[int]], all_collisions: Dict[str, List[List[List[int]]]]) -> None:
+def add_collisions(part_name: str, part_collisions: Dict[str, Any], all_collisions: Dict[str, List[Dict[str, Any]]]) -> None:
     if part_name in all_collisions.keys():
         values = all_collisions[part_name]
         values.append(part_collisions)
@@ -221,37 +224,78 @@ def tabulate_data_format(occurrences: Dict[int, int], shared_parts: Dict[int, in
     return data
 
 
-def display_detailed_occurrences(occurrences: Dict[str, List[List[List[int]]]]) -> None:
+def display_detailed_occurrences(occurrences: Dict[str, List[Dict[str, Any]]]) -> None:
     scores = get_scores(occurrences)
-    for name, part in scores.items():
-        table_data = get_table_data(name, part)
-        table = tabulate(table_data, headers="firstrow", tablefmt="github", stralign="left", numalign="center", floatfmt=".2f")
-        print(f"\n{table}\n")
+    all_scores = get_all_scores(occurrences)
+    for (score_name, score_part), (all_name, all_part) in zip(scores.items(), all_scores.items()):
+        if score_name == all_name:
+            table_data = get_table_data(score_name, score_part, all_part)
+            table = tabulate(table_data, headers="firstrow", tablefmt="github", stralign="left", numalign="center", floatfmt=".2f")
+            print(f"\n{table}\n")
+        else:
+            print(f"WARNING: The structure does not match: {score_name} - {all_name}, skipping")
 
 
-def get_scores(occurrences: Dict[str, List[List[List[int]]]]) -> Dict[str, Dict[int, int]]:
+def get_scores(all_collisions: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Dict[int, int]]:
     scores = {'Source': {}, 'Target': {}, 'Polar_expression': {}}
 
-    for name, occurrence in occurrences.items():
-        name_score = scores.get(name)
-        for collisions in occurrence:
-            for collision in collisions:
-                size = len(collision)
+    for part_name, collisions in all_collisions.items():
+        name_score = scores.get(part_name)
+        for item in collisions:
+            occurrences = item["collisions"]
+            for occurrence in occurrences:
+                size = len(occurrence)
                 if size in name_score.keys():
                     name_score[size] += 1
                 else:
                     name_score[size] = 1
 
+        ordered_scores = dict(sorted(name_score.items()))
+        scores[part_name] = ordered_scores
+
     return scores
 
 
-def get_table_data(name: str, scores: Dict[int, int]) -> List[List[str]]:
-    headers = [f"Collision length #{length}" for length in scores.keys()]
-    data = [headers]
+def get_all_scores(all_collisions: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Dict[int, int]]:
+    all_scores = {'Source': {}, 'Target': {}, 'Polar_expression': {}}
 
-    values = [name]
-    for score in scores.values():
-        values.append(score)
+    for part_name, collisions in all_collisions.items():
+        name_score = all_scores.get(part_name)
+        for item in collisions:
+            occurrences = item["collisions"]
+            number_opinions = item["opinions"]
+            for occurrence in occurrences:
+                if len(occurrence) == number_opinions:
+                    if number_opinions in name_score.keys():
+                        name_score[number_opinions] += 1
+                    else:
+                        name_score[number_opinions] = 1
+                else:
+                    continue
+
+    return all_scores
+
+
+def get_table_data(score_name: str, scores: Dict[int, int], all_scores: Dict[int, int]) -> List[List[str]]:
+    headers = []
+
+    for score_key in scores.keys():
+        headers.append(f"C{score_key}")
+        if score_key in all_scores.keys():
+            headers.append(f"All C{score_key}")
+        else:
+            continue
+
+    data = [headers]
+    values = [score_name]
+
+    for score_key, score_value in scores.items():
+        values.append(score_value)
+        if score_key in all_scores.keys():
+            all_value = all_scores[score_key]
+            values.append(all_value)
+        else:
+            continue
 
     data.append(values)
 
