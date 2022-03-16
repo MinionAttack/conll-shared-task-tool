@@ -117,11 +117,14 @@ def count_detailed_similar_parts(sentences: List[Dict[str, Any]], detailed_occur
             for opinion_index, opinion in enumerate(opinions, start=1):
                 collisions = get_collisions(opinion_part, opinion_index, opinion, opinions)
                 if collisions:
-                    if opinion_part == "Source" and not is_sublist(sources, collisions):
+                    if opinion_part == "Source" and not is_sublist(sources, collisions) and not is_index_part_collision(sources,
+                                                                                                                        collisions):
                         sources.append(collisions)
-                    elif opinion_part == "Target" and not is_sublist(targets, collisions):
+                    elif opinion_part == "Target" and not is_sublist(targets, collisions) and not is_index_part_collision(targets,
+                                                                                                                          collisions):
                         targets.append(collisions)
-                    elif opinion_part == "Polar_expression" and not is_sublist(expressions, collisions):
+                    elif opinion_part == "Polar_expression" and not is_sublist(expressions, collisions) and not is_index_part_collision(
+                            expressions, collisions):
                         expressions.append(collisions)
                     else:
                         continue
@@ -148,6 +151,7 @@ def get_collisions(part: str, opinion_index: int, actual_opinion: Dict[str, Any]
     if not empty_part(actual_opinion_part):
         actual_opinion_part_data = get_opinion_part_data(actual_opinion_part)
         others = other_opinions[opinion_index::1]
+        no_collisions = 0
         for other_index, other_opinion in enumerate(others, start=1):
             other_opinion_part = other_opinion.get(part)
             if not empty_part(other_opinion_part):
@@ -160,9 +164,11 @@ def get_collisions(part: str, opinion_index: int, actual_opinion: Dict[str, Any]
                         part_collisions.append(opinion_index)
                         part_collisions.append(opinion_index + other_index)
                 else:
-                    continue
+                    no_collisions += 1
             else:
                 continue
+        if no_collisions == len(others):
+            part_collisions.append(opinion_index)
 
         return part_collisions
     else:
@@ -179,6 +185,19 @@ def get_opinion_part_data(opinion_part: List[List[str]]) -> Set[Tuple[str, str]]
         data.add(pair)
 
     return data
+
+
+def is_index_part_collision(reference: List[List[int]], compare: List[int]) -> bool:
+    if len(compare) == 1:
+        for collisions in reference:
+            if compare[0] in collisions:
+                return True
+            else:
+                continue
+    else:
+        return False
+
+    return False
 
 
 def is_sublist(reference: List[List[int]], compare: List[int]):
