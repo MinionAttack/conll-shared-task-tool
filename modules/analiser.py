@@ -20,21 +20,21 @@ def get_duplicate_elements(file: str) -> None:
 def find_duplicates(sentences: List[Dict[str, Any]], file_name: str) -> None:
     print(f"Finding duplicate elements in {file_name} file")
 
-    # opinion_occurrences = {}
-    # similar_parts_occurrences = {}
-    # for sentence in sentences:
-    #     opinions = sentence.get("opinions")
-    #     if opinions:
-    #         count_occurrences(opinions, opinion_occurrences)
-    #         count_similar_parts(opinions, similar_parts_occurrences)
-    #     else:
-    #         continue
-    #
-    # ordered_opinion_occurrences = dict(sorted(opinion_occurrences.items()))
-    # ordered_similar_parts_occurrences = dict(sorted(similar_parts_occurrences.items()))
-    #
-    # headers = ["Number of opinions", "Occurrences", "Number of times a sentence shares parts"]
-    # display_occurrences(ordered_opinion_occurrences, ordered_similar_parts_occurrences, headers)
+    opinion_occurrences = {}
+    similar_parts_occurrences = {}
+    for sentence in sentences:
+        opinions = sentence.get("opinions")
+        if opinions:
+            count_occurrences(opinions, opinion_occurrences)
+            count_similar_parts(opinions, similar_parts_occurrences)
+        else:
+            continue
+
+    ordered_opinion_occurrences = dict(sorted(opinion_occurrences.items()))
+    ordered_similar_parts_occurrences = dict(sorted(similar_parts_occurrences.items()))
+
+    headers = ["Number of opinions", "Occurrences", "Number of times a sentence shares parts"]
+    display_occurrences(ordered_opinion_occurrences, ordered_similar_parts_occurrences, headers)
 
     detailed_parts_occurrences = {}
     count_detailed_similar_parts(sentences, detailed_parts_occurrences)
