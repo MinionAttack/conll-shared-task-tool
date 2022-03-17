@@ -203,9 +203,9 @@ def is_index_part_collision(reference: List[List[int]], compare: List[int]) -> b
 def is_sublist(reference: List[List[int]], compare: List[int]):
     # This removes the case when [[1,2,3], [2,3]].
     # In this case [2,3] should not be added.
-
-    first_index = -1
+    
     for collisions in reference:
+        first_index = -1
         for collisions_index in range(len(collisions)):
             if first_index >= 0:
                 compare_index = collisions_index - first_index
