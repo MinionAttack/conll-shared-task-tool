@@ -175,27 +175,51 @@ en_gum,es_ancora,cs_pdt,pl_sz,hu_szeged,ja_gsd,gl_ctg,ja_modern,hsb_ufal,ko_kais
 
 ### 6. Analise corpus
 
-`$ ./conllSharedTasks.py analise --file Desktop/SemEval-2022_Shared_Task_10/data/opener_en/train.json`
+`$ ./conllSharedTasks.py analise --file Desktop/SemEval-2022_Shared_Task_10/data/opener_es/test.json`
 
-This will show a table with the results:
+This will show a table with the results for each measure:
+
+1. The number of opinions, how many times they occur and, for each opinion, how many share part of an opinion with the rest of the opinions.
 
 ```
 |  Number of opinions  |  Occurrences  |  Number of times a sentence shares parts  |
 |----------------------|---------------|-------------------------------------------|
-|          1           |      638      |                     0                     |
-|          2           |      424      |                    224                    |
-|          3           |      173      |                    124                    |
-|          4           |      80       |                    68                     |
-|          5           |      34       |                    31                     |
-|          6           |      23       |                    17                     |
-|          7           |      13       |                    12                     |
-|          8           |       5       |                     4                     |
-|          9           |       3       |                     3                     |
-|          10          |       1       |                     1                     |
+|          1           |      159      |                     0                     |
+|          2           |      77       |                    32                     |
+|          3           |      41       |                    31                     |
+|          4           |      34       |                    27                     |
+|          5           |      17       |                    17                     |
+|          6           |       5       |                     5                     |
+|          7           |       8       |                     5                     |
+|          8           |       6       |                     6                     |
+|          9           |       5       |                     5                     |
+|          10          |       3       |                     3                     |
 |          11          |       2       |                     2                     |
-|          13          |       1       |                     1                     |
+|          12          |       1       |                     1                     |
+|          13          |       2       |                     2                     |
 |          14          |       1       |                     1                     |
-|          17          |       2       |                     2                     |
+|          17          |       1       |                     1                     |
+```
+
+2. For each part of an opinion, it shows the number of collisions of each size.
+    1. The "All Cx" column shows how many times a part of an opinion collides with all other opinions in a sentence.
+    2. The column "Not All Cx" shows how many times a part of an opinion does not collide with all other opinions in a sentence. In this
+       case, repetitions are not taken into account, so the numbers show single occurrences.
+
+```
+|        |  C1  |  All C1  |  Not All C1  |  C2  |  All C2  |  Not All C2  |  C3  |  All C3  |  C4  |  Not All C4  |
+|--------|------|----------|--------------|------|----------|--------------|------|----------|------|--------------|
+| Source |  17  |    10    |      2       |  9   |    3     |      1       |  1   |    1     |  1   |      1       |
+
+
+|        |  C1  |  All C1  |  Not All C1  |  C2  |  All C2  |  Not All C2  |  C3  |  All C3  |  Not All C3  |  C4  |  Not All C4  |
+|--------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|--------------|
+| Target | 535  |   114    |      5       |  96  |    20    |      3       |  21  |    11    |      2       |  1   |      1       |
+
+
+|                  |  C1  |  All C1  |  Not All C1  |  C2  |  All C2  |  Not All C2  |  C3  |  All C3  |  Not All C3  |  C4  |  All C4  |  Not All C4  |  C5  |  All C5  |  Not All C5  |  C6  |  Not All C6  |
+|------------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|--------------|
+| Polar_expression | 813  |   159    |      4       |  43  |    9     |      3       |  4   |    1     |      1       |  5   |    1     |      1       |  4   |    1     |      2       |  1   |      1       |
 ```
 
 ## Licensing agreement

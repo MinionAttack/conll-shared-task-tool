@@ -117,15 +117,15 @@ def count_detailed_similar_parts(sentences: List[Dict[str, Any]], detailed_occur
             for opinion_index, opinion in enumerate(opinions, start=1):
                 collisions = get_collisions(opinion_part, opinion_index, opinion, opinions)
                 if collisions:
-                    if opinion_part == "Source" and not is_sublist(sources, collisions) and not is_index_part_collision(sources,
-                                                                                                                        collisions):
-                        sources.append(collisions)
-                    elif opinion_part == "Target" and not is_sublist(targets, collisions) and not is_index_part_collision(targets,
-                                                                                                                          collisions):
-                        targets.append(collisions)
-                    elif opinion_part == "Polar_expression" and not is_sublist(expressions, collisions) and not is_index_part_collision(
-                            expressions, collisions):
-                        expressions.append(collisions)
+                    if opinion_part == "Source":
+                        if not is_sublist(sources, collisions) and not is_index_part_collision(sources, collisions):
+                            sources.append(collisions)
+                    elif opinion_part == "Target":
+                        if not is_sublist(targets, collisions) and not is_index_part_collision(targets, collisions):
+                            targets.append(collisions)
+                    elif opinion_part == "Polar_expression":
+                        if not is_sublist(expressions, collisions) and not is_index_part_collision(expressions, collisions):
+                            expressions.append(collisions)
                     else:
                         continue
                 else:
@@ -203,7 +203,7 @@ def is_index_part_collision(reference: List[List[int]], compare: List[int]) -> b
 def is_sublist(reference: List[List[int]], compare: List[int]):
     # This removes the case when [[1,2,3], [2,3]].
     # In this case [2,3] should not be added.
-    
+
     for collisions in reference:
         first_index = -1
         for collisions_index in range(len(collisions)):
@@ -246,9 +246,12 @@ def tabulate_data_format(occurrences: Dict[int, int], shared_parts: Dict[int, in
 def display_detailed_occurrences(occurrences: Dict[str, List[Dict[str, Any]]]) -> None:
     scores = get_scores(occurrences)
     all_scores = get_all_scores(occurrences)
-    for (score_name, score_part), (all_name, all_part) in zip(scores.items(), all_scores.items()):
-        if score_name == all_name:
-            table_data = get_table_data(score_name, score_part, all_part)
+    not_all_scores = get_not_all_scores(occurrences)
+
+    for (score_name, score_part), (all_name, all_part), (not_name, not_part) in zip(scores.items(), all_scores.items(),
+                                                                                    not_all_scores.items()):
+        if score_name == all_name and score_name == not_name:
+            table_data = get_table_data(score_name, score_part, all_part, not_part)
             table = tabulate(table_data, headers="firstrow", tablefmt="github", stralign="left", numalign="center", floatfmt=".2f")
             print(f"\n{table}\n")
         else:
@@ -295,15 +298,46 @@ def get_all_scores(all_collisions: Dict[str, List[Dict[str, Any]]]) -> Dict[str,
     return all_scores
 
 
-def get_table_data(score_name: str, scores: Dict[int, int], all_scores: Dict[int, int]) -> List[List[str]]:
+def get_not_all_scores(all_collisions: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Dict[int, int]]:
+    not_all_scores = {'Source': {}, 'Target': {}, 'Polar_expression': {}}
+
+    for part_name, collisions in all_collisions.items():
+        name_score = not_all_scores.get(part_name)
+        for item in collisions:
+            occurrences = item["collisions"]
+            number_opinions = item["opinions"]
+            for occurrence in occurrences:
+                if len(occurrence) != number_opinions:
+                    if number_opinions in name_score.keys() and len(occurrence) in name_score.keys():
+                        if occurrence not in name_score[len(occurrence)]:
+                            name_score[len(occurrence)].append(occurrence)
+                        else:
+                            continue
+                    else:
+                        name_score[len(occurrence)] = [occurrence]
+                else:
+                    continue
+
+    for name, values in not_all_scores.items():
+        for opinions, items in values.items():
+            elements = len(items)
+            values[opinions] = elements
+
+        ordered = dict(sorted(values.items()))
+        not_all_scores[name] = ordered
+
+    return not_all_scores
+
+
+def get_table_data(score_name: str, scores: Dict[int, int], all_scores: Dict[int, int], not_scores: Dict[int, int]) -> List[List[Any]]:
     headers = []
 
     for score_key in scores.keys():
         headers.append(f"C{score_key}")
         if score_key in all_scores.keys():
             headers.append(f"All C{score_key}")
-        else:
-            continue
+        if score_key in not_scores.keys():
+            headers.append(f"Not All C{score_key}")
 
     data = [headers]
     values = [score_name]
@@ -313,8 +347,26 @@ def get_table_data(score_name: str, scores: Dict[int, int], all_scores: Dict[int
         if score_key in all_scores.keys():
             all_value = all_scores[score_key]
             values.append(all_value)
-        else:
-            continue
+        if score_key in not_scores.keys():
+            not_value = not_scores[score_key]
+            values.append(not_value)
+
+    data.append(values)
+
+    return data
+
+
+def get_not_all_data(name: str, part: Dict[int, int]) -> List[List[Any]]:
+    headers = []
+
+    for score_key in part.keys():
+        headers.append(f"Not All C{score_key}")
+
+    data = [headers]
+    values = [name]
+
+    for score_value in part.values():
+        values.append(score_value)
 
     data.append(values)
 
