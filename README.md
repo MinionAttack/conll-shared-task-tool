@@ -22,6 +22,7 @@ This script has 6 features:
 4. For a parser, show the outliers observed in the graphs.
 5. For outliers of a parser, calculate some statistics on them.
 6. For a corpus of SemEval-2022 Shared Task 10, find how many sentences have multiple opinions that share some part.
+7. For a corpus of SemEval-2022 Shared Task 10, separate the files by the number of sentence opinions.
 
 **It is important to note that the script uses the _data_, _experiments_, _cache_ and _charts_ folders as the base directory for some features.**
 
@@ -38,7 +39,7 @@ To run the script, from a terminal in the root directory, type:
 This will show the usage:
 
 ```
-usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics,analise} ...
+usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics,analise,separate} ...
 
 Gets the rankings and shows some metrics on the CoNLL Shared Task of the specified year or in custom experiments.
 
@@ -46,13 +47,14 @@ optional arguments:
   -h, --help            show this help message and exit
 
 Commands:
-  {rankings,metrics,experiments,outliers,statistics,analise}
+  {rankings,metrics,experiments,outliers,statistics,analise,separate}
     rankings            Get the classification results of the specified type and year from the website.
     metrics             Gets the indicated metric on the selected CoNLL Shared Task dataset.
     experiments         For a ranking, gets a leaderboard of the parsers used in the customised experiments.
     outliers            For a given parser, it shows the subsets in which it obtained its best position.
     statistics          It shows different statistics on the outliers of the language sets.
     analise             For a given corpus, analyse whether it has sentences with several opinions in which some element is shared between them.
+    separate            Divide the files of each corpus into as many files as the number of opinions.
 ```
 
 If you want to know how to use a specific command, for example the *rankings* command, type:
@@ -221,6 +223,12 @@ This will show a table with the results for each measure:
 |------------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|----------|--------------|------|--------------|
 | Polar_expression | 813  |   159    |      4       |  43  |    9     |      3       |  4   |    1     |      1       |  5   |    1     |      1       |  4   |    1     |      2       |  1   |      1       |
 ```
+
+### 7. Separate sentences by the number of opinions
+
+`$ ./conllSharedTasks.py separate --original data/original --separated data/separated`
+
+This will generate files in the following format: `name-number_opinions.json`
 
 ## Licensing agreement
 

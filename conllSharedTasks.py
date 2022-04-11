@@ -3,8 +3,10 @@
 
 from argparse import ArgumentParser, Namespace
 from distutils import util
+from pathlib import Path
 from typing import List
 
+from modules import separator
 from modules.analiser import get_duplicate_elements
 from modules.experiments import measure_experiments_metrics
 from modules.metrics import measure_shared_task_metrics
@@ -100,6 +102,10 @@ def main() -> None:
                                                       'which some element is shared between them.')
     subparser.add_argument('--file', type=str, required=True, help="Path to the JSON file of the treebank.")
 
+    subparser = subparsers.add_parser('separate', help='Divide the files of each corpus into as many files as the number of opinions.')
+    subparser.add_argument('--original', type=str, required=True, help="Path to the folder where the corpus JSON files are located.")
+    subparser.add_argument('--separated', type=str, required=True, help="Path to the folder where the split JSON files will be created.")
+
     arguments = parser.parse_args()
     if arguments.command:
         process_arguments(arguments)
@@ -145,6 +151,10 @@ def process_arguments(arguments: Namespace) -> None:
     elif command == "analise":
         file = arguments.file
         analise_handler(file)
+    elif command == "separate":
+        input_folder = arguments.original
+        output_folder = arguments.separated
+        separate_handler(input_folder, output_folder)
     else:
         print("ERROR: Unknown parameter")
 
@@ -173,6 +183,16 @@ def statistics_handler(file: str) -> None:
 
 def analise_handler(file: str) -> None:
     get_duplicate_elements(file)
+
+
+def separate_handler(input_folder: str, output_folder: str) -> None:
+    input_path = Path(input_folder).resolve()
+    output_path = Path(output_folder).resolve()
+
+    if input_path.is_dir() and output_path.is_dir():
+        separator.walk_directories(input_path, output_path)
+    else:
+        print("Error: Check that the arguments are folders and not files, and that the folders exist")
 
 
 if __name__ == "__main__":
