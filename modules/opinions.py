@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from matplotlib.pyplot import savefig, plot, legend, xlabel, ylabel, title, xticks, clf, figure, yticks, annotate
 from numpy import NaN, arange
@@ -32,10 +32,11 @@ def generate_chart(dataframes: Dict[str, DataFrame], scores_type: str, display_v
     print("INFO: Generating charts")
 
     for name, dataframe in dataframes.items():
-        opinions = dataframe.opinions.tolist()
         scores = dataframe.get(scores_type)
         if scores is not None:
+            opinions = dataframe.opinions.tolist()
             scores = scores.tolist()
+            opinions, scores = remove_none_values(opinions, scores)
             figure(figsize=(5, 5))
             yticks(arange(0, 1, 0.1))
             xticks(opinions)
@@ -53,6 +54,15 @@ def generate_chart(dataframes: Dict[str, DataFrame], scores_type: str, display_v
             clf()
         else:
             print(f"ERROR: The indicated {scores_type} value has no scores")
+
+
+def remove_none_values(opinions: List[int], scores: List[int]) -> Tuple[List[int], List[int]]:
+    indices = {index for index, value in enumerate(scores) if value is None}
+
+    final_opinions = [value for index, value in enumerate(opinions) if index not in indices]
+    final_scores = [value for index, value in enumerate(scores) if index not in indices]
+
+    return final_opinions, final_scores
 
 
 def show_values(x_values: List[int], y_values: List[int], vertical_position: str, horizontal_position: str) -> None:
