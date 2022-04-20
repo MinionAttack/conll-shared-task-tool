@@ -50,7 +50,7 @@ def generate_chart(dataframes: Dict[str, DataFrame], scores_type: str, display_v
 
             Path(__file__).parent.parent.joinpath("charts").joinpath("opinions").mkdir(parents=True, exist_ok=True)
             file_path = Path(__file__).parent.parent.joinpath("charts").joinpath("opinions").joinpath(f"{name}.png")
-            savefig(file_path, bbox_inches='tight', transparent=True)
+            savefig(file_path, bbox_inches='tight', transparent=True, dpi=600)
             clf()
         else:
             print(f"ERROR: The indicated {scores_type} value has no scores")
