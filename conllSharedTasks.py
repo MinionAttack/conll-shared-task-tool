@@ -10,6 +10,7 @@ from modules import separator
 from modules.analiser import get_duplicate_elements
 from modules.experiments import measure_experiments_metrics
 from modules.metrics import measure_shared_task_metrics
+from modules.opinions import generate_opinion_charts
 from modules.outlier_statistics import get_outlier_statistics
 from modules.outliers import get_parser_outliers
 from modules.rankings import get_rankings
@@ -106,6 +107,13 @@ def main() -> None:
     subparser.add_argument('--original', type=str, required=True, help="Path to the folder where the corpus JSON files are located.")
     subparser.add_argument('--separated', type=str, required=True, help="Path to the folder where the split JSON files will be created.")
 
+    subparser = subparsers.add_parser('opinions', help='Generates graphs with F1 values for each number of opinions.')
+    subparser.add_argument('--folder', type=str, required=True, help="Path to the folder with the CSV files with the opinions and their "
+                                                                     "scores.")
+    subparser.add_argument('--scores', type=str, choices=["dev", "test"], required=True, help="The type of scores with which to generate "
+                                                                                              "the graphs.")
+    subparser.add_argument('--display', action='store_true', help="Whether or not to display values on graphs.")
+
     arguments = parser.parse_args()
     if arguments.command:
         process_arguments(arguments)
@@ -155,6 +163,11 @@ def process_arguments(arguments: Namespace) -> None:
         input_folder = arguments.original
         output_folder = arguments.separated
         separate_handler(input_folder, output_folder)
+    elif command == "opinions":
+        input_folder = arguments.folder
+        scores_type = arguments.scores
+        display_values = arguments.display
+        opinions_handler(input_folder, scores_type, display_values)
     else:
         print("ERROR: Unknown parameter")
 
@@ -193,6 +206,15 @@ def separate_handler(input_folder: str, output_folder: str) -> None:
         separator.walk_directories(input_path, output_path)
     else:
         print("Error: Check that the arguments are folders and not files, and that the folders exist")
+
+
+def opinions_handler(input_folder: str, scores_type: str, display_values: bool) -> None:
+    input_path = Path(input_folder).resolve()
+
+    if input_path.is_dir():
+        generate_opinion_charts(input_path, scores_type, display_values)
+    else:
+        print("Error: Check that the argument is a folder and not file, and that the folder exists")
 
 
 if __name__ == "__main__":

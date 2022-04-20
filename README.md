@@ -14,7 +14,7 @@ Table of contents.
 This is a tool to download the CoNLL Shared Task classification tables and perform metrics on them. It also allows to perform metrics on
 local results and display outliers for a parser.
 
-This script has 6 features:
+This script has 8 features:
 
 1. Download the parser ranking tables from the Conll Shared Task website for a particular year.
 2. Calculate different metrics on the downloaded data by displaying the results on screen and generating the respective graphs.
@@ -23,6 +23,7 @@ This script has 6 features:
 5. For outliers of a parser, calculate some statistics on them.
 6. For a corpus of SemEval-2022 Shared Task 10, find how many sentences have multiple opinions that share some part.
 7. For a corpus of SemEval-2022 Shared Task 10, separate the files by the number of sentence opinions.
+8. For a corpus of SemEval-2022 Shared Task 10, Generates graphs with F1 values for each number of opinions.
 
 **It is important to note that the script uses the _data_, _experiments_, _cache_ and _charts_ folders as the base directory for some features.**
 
@@ -39,7 +40,7 @@ To run the script, from a terminal in the root directory, type:
 This will show the usage:
 
 ```
-usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics,analise,separate} ...
+usage: conllSharedTasks.py [-h] {rankings,metrics,experiments,outliers,statistics,analise,separate,opinions} ...
 
 Gets the rankings and shows some metrics on the CoNLL Shared Task of the specified year or in custom experiments.
 
@@ -47,7 +48,7 @@ optional arguments:
   -h, --help            show this help message and exit
 
 Commands:
-  {rankings,metrics,experiments,outliers,statistics,analise,separate}
+  {rankings,metrics,experiments,outliers,statistics,analise,separate,opinions}
     rankings            Get the classification results of the specified type and year from the website.
     metrics             Gets the indicated metric on the selected CoNLL Shared Task dataset.
     experiments         For a ranking, gets a leaderboard of the parsers used in the customised experiments.
@@ -55,6 +56,7 @@ Commands:
     statistics          It shows different statistics on the outliers of the language sets.
     analise             For a given corpus, analyse whether it has sentences with several opinions in which some element is shared between them.
     separate            Divide the files of each corpus into as many files as the number of opinions.
+    opinions            Generates graphs with F1 values for each number of opinions.
 ```
 
 If you want to know how to use a specific command, for example the *rankings* command, type:
@@ -229,6 +231,26 @@ This will show a table with the results for each measure:
 `$ ./conllSharedTasks.py separate --original data/original --separated data/separated`
 
 This will generate files in the following format: `name-number_opinions.json`
+
+### 8. Generate graphs with F1 scores for each number of opinions
+
+`$ ./conllSharedTasks.py opinions --folder data/opinions/ --scores test --display`
+
+- **folder**: Folder where the CSV files are located.
+    - Note: CSV files must have a header on the first line, as the program interprets the first line as the column names.
+    - If there is no value for a given number of opinions, leave it empty as the program will interpret it as `None` (See #4).
+      ```
+      opinions,dev,test
+      0,0.000,0.000
+      1,0.372,0.292
+      2,0.394,0.343
+      3,0.400,0.500
+      4,,0.484
+      ```
+- **scores**: The type of scores to be displayed on the graphs (`dev` or `test`).
+- **display**: If specified, displays the values of the points on the graph.
+
+The charts will be generated inside the `charts/opinions/` folder.
 
 ## Licensing agreement
 
